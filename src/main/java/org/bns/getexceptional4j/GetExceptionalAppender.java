@@ -53,6 +53,8 @@ public class GetExceptionalAppender extends AppenderSkeleton {
 
     private final Priority reportingLevel;
 
+    private final boolean active;
+
     /**
      * Creates a new appender.
      * 
@@ -139,11 +141,20 @@ public class GetExceptionalAppender extends AppenderSkeleton {
         this.callback = callback;
         this.threaded = threaded;
         this.reportingLevel = reportingLevel;
+        if (this.apiKey.equals(GetExceptionalUtils.NO_OP_KEY)) {
+            this.active = false;
+        } else {
+            this.active = true;
+        }
     }
 
     @Override
     public void append(final LoggingEvent le) {
         // Only submit the bug under certain conditions.
+        if (!active) {
+            System.out.println("GetExceptional reporting is not active");
+            return;
+        }
         if (submitBug(le)) {
             // Just submit it to the thread pool to avoid holding up the calling
             // thread.
