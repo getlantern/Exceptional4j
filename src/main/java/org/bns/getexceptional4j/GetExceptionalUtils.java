@@ -7,6 +7,8 @@ import java.util.Date;
  * Utilities for GetExceptional4j.
  */
 public class GetExceptionalUtils {
+    
+    public static final String NO_OP_KEY = "no_op_key";
 
     /**
      * Encodes date value into ISO8601 that can be compared 
