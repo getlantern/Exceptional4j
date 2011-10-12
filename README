@@ -35,13 +35,6 @@ GetExceptional4j is currently set up to be integrated programmatically when your
             props.put("log4j.rootLogger", "warn, RollingTextFile");
             props.put("log4j.appender.RollingTextFile",
                 "org.apache.log4j.RollingFileAppender");
-            props.put("log4j.appender.RollingTextFile.MaxFileSize", "10MB");
-            props.put("log4j.appender.RollingTextFile.MaxBackupIndex", "4");
-            props.put("log4j.appender.RollingTextFile.layout",
-                "org.apache.log4j.PatternLayout");
-            props.put(
-                "log4j.appender.RollingTextFile.layout.ConversionPattern",
-                "%-6r %d{ISO8601} %-5p [%t] %c{2}.%M (%F:%L) - %m%n");
 
             PropertyConfigurator.configure(props);
             final GetExceptionalAppenderCallback callback = 
