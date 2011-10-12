@@ -1,1 +1,5 @@
 This is a project integrating the log4j logger with GetExceptional to report a configurable number of log errors to GetExceptional.
+
+It's currently set up to be integrated programmatically, for example:
+
+
