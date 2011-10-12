@@ -24,7 +24,6 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.AppenderSkeleton;
@@ -75,7 +74,7 @@ public class GetExceptionalAppender extends AppenderSkeleton {
     public GetExceptionalAppender(final String apiKey, 
         final Priority reportingLevel) {
         this(apiKey, new GetExceptionalAppenderCallback() {
-            public boolean addData(final JSONObject json) {return true;}
+            public boolean addData(final JSONObject json, final LoggingEvent le) {return true;}
         }, reportingLevel);
     }
 
@@ -117,7 +116,7 @@ public class GetExceptionalAppender extends AppenderSkeleton {
      */
     public GetExceptionalAppender(final String apiKey, final boolean threaded) {
         this(apiKey, new GetExceptionalAppenderCallback() {
-            public boolean addData(final JSONObject json) {return true;}
+            public boolean addData(final JSONObject json, final LoggingEvent le) {return true;}
         }, threaded, Level.WARN);
     }
     
@@ -214,7 +213,7 @@ public class GetExceptionalAppender extends AppenderSkeleton {
             json.put("client", clientData(le));
             final String jsonStr = json.toJSONString();
             System.out.println("JSON:\n"+jsonStr);
-            if (callback.addData(json)) {
+            if (callback.addData(json, this.loggingEvent)) {
                 submitData(jsonStr);
             }
         }
