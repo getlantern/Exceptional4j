@@ -1,5 +1,7 @@
 package org.bns.getexceptional4j;
 
+import java.io.IOException;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.apache.log4j.Level;
@@ -21,12 +23,12 @@ public class GetExceptionalAppenderTest {
             return;
         }
         final GetExceptionalAppender appender = 
-            new GetExceptionalAppender("", false);
+            new GetExceptionalAppender(API_KEY, false);
         final String fqnOfCategoryClass = getClass().getName();
         final Category logger = Logger.getLogger(getClass());
         final Priority level = Level.ERROR;
-        final Object message = "big bad error";
-        final Throwable throwable = new RuntimeException();
+        final Object message = "different error";
+        final Throwable throwable = new IOException();
         final LoggingEvent le = 
             new LoggingEvent(fqnOfCategoryClass, logger, level, message, throwable);
         appender.append(le);

@@ -20,8 +20,10 @@ import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
@@ -73,8 +75,7 @@ public class GetExceptionalAppender extends AppenderSkeleton {
     public GetExceptionalAppender(final String apiKey, 
         final Priority reportingLevel) {
         this(apiKey, new GetExceptionalAppenderCallback() {
-            public void addData(final JSONObject json) {
-            }
+            public boolean addData(final JSONObject json) {return true;}
         }, reportingLevel);
     }
 
@@ -116,8 +117,7 @@ public class GetExceptionalAppender extends AppenderSkeleton {
      */
     public GetExceptionalAppender(final String apiKey, final boolean threaded) {
         this(apiKey, new GetExceptionalAppenderCallback() {
-            public void addData(final JSONObject json) {
-            }
+            public boolean addData(final JSONObject json) {return true;}
         }, threaded, Level.WARN);
     }
     
@@ -214,7 +214,9 @@ public class GetExceptionalAppender extends AppenderSkeleton {
             json.put("client", clientData(le));
             final String jsonStr = json.toJSONString();
             System.out.println("JSON:\n"+jsonStr);
-            submitData(jsonStr);
+            if (callback.addData(json)) {
+                submitData(jsonStr);
+            }
         }
     }
     
@@ -225,7 +227,7 @@ public class GetExceptionalAppender extends AppenderSkeleton {
         final String url = "http://api.getexceptional.com/api/errors?" +
             "api_key="+this.apiKey+"&protocol_version=6";
         final HttpPost post = new HttpPost(url);
-        //post.setHeader(HttpHeaders.CONTENT_ENCODING, "gzip");
+        post.setHeader(HttpHeaders.CONTENT_ENCODING, "gzip");
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         GZIPOutputStream gos = null;
         InputStream is = null;
@@ -233,11 +235,10 @@ public class GetExceptionalAppender extends AppenderSkeleton {
             gos = new GZIPOutputStream(baos);
             gos.write(requestBody.getBytes("UTF-8"));
             gos.close();
-            //post.setEntity(new ByteArrayEntity(baos.toByteArray()));
-            post.setEntity(new StringEntity(requestBody));
+            post.setEntity(new ByteArrayEntity(baos.toByteArray()));
             System.err.println("Sending data to server...");
             final HttpResponse response = httpclient.execute(post);
-            System.err.println("\n\nSent data to server...headers...");
+            System.err.println("Sent data to server...");
 
             final int statusCode = response.getStatusLine().getStatusCode();
             final HttpEntity responseEntity = response.getEntity();
@@ -321,7 +322,6 @@ public class GetExceptionalAppender extends AppenderSkeleton {
         }
         json.put("disk_space", String.valueOf(free));
         
-        this.callback.addData(json);
         return json;
     }
     
