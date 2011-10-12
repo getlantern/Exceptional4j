@@ -27,6 +27,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
+import org.apache.log4j.Priority;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
@@ -49,52 +50,96 @@ public class GetExceptionalAppender extends AppenderSkeleton {
 
     private final String apiKey;
 
+    private final Priority reportingLevel;
+
     /**
      * Creates a new appender.
+     * 
+     * @param apiKey Your API key.
      */
     public GetExceptionalAppender(final String apiKey) {
-        this(apiKey, new GetExceptionalAppenderCallback() {
-            public void addData(final JSONObject json) {
-            }
-        }, true);
+        this(apiKey, Level.WARN);
     }
     
     /**
+     * Creates a new appender with the specified minimum log level to report.
+     * 
+     * @param apiKey Your API key.
+     * @param reportingLevel The log4j level to report errors at. Anything 
+     * logged at the specified level or above will be reported. If you set
+     * the reportingLevel to Level.WARN, for example, all warn level logs will
+     * be sent along with any more severe logs such as ERROR and FATAL.
+     */
+    public GetExceptionalAppender(final String apiKey, 
+        final Priority reportingLevel) {
+        this(apiKey, new GetExceptionalAppenderCallback() {
+            public void addData(final JSONObject json) {
+            }
+        }, reportingLevel);
+    }
+
+    /**
      * Creates a new appender with callback.
      * 
+     * @param apiKey Your API key.
      * @param callback The class to call for modifications prior to submitting
      * the bug.
      */
     public GetExceptionalAppender(final String apiKey, 
         final GetExceptionalAppenderCallback callback) {
-        this(apiKey, callback, true);
+        this(apiKey, callback, true, Level.WARN);
+    }
+    
+    /**
+     * Creates a new appender with callback.
+     * 
+     * @param apiKey Your API key.
+     * @param callback The class to call for modifications prior to submitting
+     * the bug.
+     * @param reportingLevel The log4j level to report errors at. Anything 
+     * logged at the specified level or above will be reported. If you set
+     * the reportingLevel to Level.WARN, for example, all warn level logs will
+     * be sent along with any more severe logs such as ERROR and FATAL.
+     */
+    public GetExceptionalAppender(final String apiKey, 
+        final GetExceptionalAppenderCallback callback, 
+        final Priority reportingLevel) {
+        this(apiKey, callback, true, reportingLevel);
     }
     
     /**
      * Creates a new appender with a flag for whether or not to thread 
      * submissions. Not threading can be useful for testing in particular.
      * 
+     * @param apiKey Your API key.
      * @param threaded Whether or not to thread submissions to GetExceptional.
      */
     public GetExceptionalAppender(final String apiKey, final boolean threaded) {
         this(apiKey, new GetExceptionalAppenderCallback() {
             public void addData(final JSONObject json) {
             }
-        }, threaded);
+        }, threaded, Level.WARN);
     }
     
     /**
      * Creates a new appender with callback.
      * 
+     * @param apiKey Your API key.
      * @param callback The class to call for modificatios prior to submitting
      * the bug.
+     * @param threaded Whether or not to thread submissions to GetExceptional.
+     * @param reportingLevel The log4j level to report errors at. Anything 
+     * logged at the specified level or above will be reported. If you set
+     * the reportingLevel to Level.WARN, for example, all warn level logs will
+     * be sent along with any more severe logs such as ERROR and FATAL.
      */
     public GetExceptionalAppender(final String apiKey, 
         final GetExceptionalAppenderCallback callback,
-        final boolean threaded) {
+        final boolean threaded, final Priority reportingLevel) {
         this.apiKey = apiKey;
         this.callback = callback;
         this.threaded = threaded;
+        this.reportingLevel = reportingLevel;
     }
 
     @Override
@@ -113,7 +158,7 @@ public class GetExceptionalAppender extends AppenderSkeleton {
 
     private boolean submitBug(final LoggingEvent le) {
         // Ignore plain old logs.
-        if (!le.getLevel().isGreaterOrEqual(Level.WARN)) {
+        if (!le.getLevel().isGreaterOrEqual(this.reportingLevel)) {
             return false;
         }
 
