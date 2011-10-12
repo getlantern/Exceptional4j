@@ -1,6 +1,28 @@
 This is a project integrating the log4j logger with GetExceptional to report a configurable number of log errors to GetExceptional.
 
-It's currently set up to be integrated programmatically when your application first loads, for example:
+To include it with maven, you can do:
+
+    <dependency>
+      <groupId>org.littleshoot</groupId>
+      <artifactId>getexceptional4j</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
+
+We'll sync it with Maven central as soon as it's stable, but until then you need to add the Sonatype SNAPSHOTS repo if you don't already include it, as in:
+
+    <repository>
+      <id>sonatype-nexus-snapshots</id>
+      <name>Sonatype Nexus Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+
+GetExceptional4j is currently set up to be integrated programmatically when your application first loads, for example:
 
     private void configureProductionLogger() {
         final File logFile = new File("/var/log/myapp.log");
