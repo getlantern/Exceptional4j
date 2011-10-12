@@ -45,7 +45,7 @@ GetExceptional4j is currently set up to be integrated programmatically when your
             final GetExceptionalAppenderCallback callback = 
                 new GetExceptionalAppenderCallback() {
                     @Override
-                    public boolean addData(final JSONObject json) {
+                    public boolean addData(final JSONObject json, final LoggingEvent le) {
                         json.put("version", LanternConstants.VERSION);
                         return true;
                     }
