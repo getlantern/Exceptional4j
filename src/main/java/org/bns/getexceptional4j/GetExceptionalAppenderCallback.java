@@ -12,6 +12,8 @@ public interface GetExceptionalAppenderCallback {
      * data or edit existing data prior to the exception being reported.
      * 
      * @param json The data for submission.
+     * @return <code>true</code> if the bug should be submitted, otherwise
+     * <code>false</code>.
      */
-    void addData(JSONObject json);
+    boolean addData(JSONObject json);
 }
