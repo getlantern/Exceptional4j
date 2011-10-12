@@ -23,6 +23,20 @@
 
   <inceptionYear>2010</inceptionYear>
 
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>6</version>
+  </parent>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+
+
   <issueManagement>
     <system>GitHub Issues</system>
     <url>https://github.com/bravenewsoftware/GetExceptional4j/issues</url>
