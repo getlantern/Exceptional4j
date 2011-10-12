@@ -1,5 +1,40 @@
 This is a project integrating the log4j logger with GetExceptional to report a configurable number of log errors to GetExceptional.
 
-It's currently set up to be integrated programmatically, for example:
+It's currently set up to be integrated programmatically when your application first loads, for example:
 
+    private void configureProductionLogger() {
+        final File logFile = new File("/var/log/myapp.log");
+        final Properties props = new Properties();
+        try {
+            final String logPath = logFile.getCanonicalPath();
+            props.put("log4j.appender.RollingTextFile.File", logPath);
+            props.put("log4j.rootLogger", "warn, RollingTextFile");
+            props.put("log4j.appender.RollingTextFile",
+                "org.apache.log4j.RollingFileAppender");
+            props.put("log4j.appender.RollingTextFile.MaxFileSize", "10MB");
+            props.put("log4j.appender.RollingTextFile.MaxBackupIndex", "4");
+            props.put("log4j.appender.RollingTextFile.layout",
+                "org.apache.log4j.PatternLayout");
+            props.put(
+                "log4j.appender.RollingTextFile.layout.ConversionPattern",
+                "%-6r %d{ISO8601} %-5p [%t] %c{2}.%M (%F:%L) - %m%n");
+
+            PropertyConfigurator.configure(props);
+            final GetExceptionalAppenderCallback callback = 
+                new GetExceptionalAppenderCallback() {
+                    @Override
+                    public boolean addData(final JSONObject json) {
+                        json.put("version", LanternConstants.VERSION);
+                        return true;
+                    }
+            };
+            final Appender bugAppender = new GetExceptionalAppender(
+               "YOUR_API_KEY", callback);
+            BasicConfigurator.configure(bugAppender);
+        } catch (final IOException e) {
+            System.out.println("Exception setting log4j props with file: "
+                    + logFile);
+            e.printStackTrace();
+        }
+    }
 
