@@ -4,7 +4,7 @@ To include it with maven, you can do:
 
     <dependency>
       <groupId>org.littleshoot</groupId>
-      <artifactId>getexceptional4j</artifactId>
+      <artifactId>exceptional4j</artifactId>
       <version>0.1-SNAPSHOT</version>
     </dependency>
 
@@ -24,7 +24,7 @@ We'll sync it with Maven central as soon as it's stable, but until then you need
       </snapshots>
     </repository>
 
-GetExceptional4j is currently set up to be integrated programmatically when your application first loads, for example:
+Exceptional4j is currently set up to be integrated programmatically when your application first loads, for example:
 
     private void configureProductionLogger() {
         final File logFile = new File("/var/log/myapp.log");
@@ -37,15 +37,15 @@ GetExceptional4j is currently set up to be integrated programmatically when your
                 "org.apache.log4j.RollingFileAppender");
 
             PropertyConfigurator.configure(props);
-            final GetExceptionalAppenderCallback callback = 
-                new GetExceptionalAppenderCallback() {
+            final ExceptionalAppenderCallback callback = 
+                new ExceptionalAppenderCallback() {
                     @Override
                     public boolean addData(final JSONObject json, final LoggingEvent le) {
                         json.put("version", LanternConstants.VERSION);
                         return true;
                     }
             };
-            final Appender bugAppender = new GetExceptionalAppender(
+            final Appender bugAppender = new ExceptionalAppender(
                "YOUR_API_KEY", callback);
             BasicConfigurator.configure(bugAppender);
         } catch (final IOException e) {

@@ -1,4 +1,4 @@
-package org.bns.getexceptional4j;
+package org.lantern.exceptional4j;
 
 import java.io.IOException;
 
@@ -9,11 +9,12 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 import org.apache.log4j.spi.LoggingEvent;
 import org.junit.Test;
+import org.lantern.exceptional4j.ExceptionalAppender;
 
 /**
  * Tests sending an error to GetExceptional. Be sure to fill in your API key!
  */
-public class GetExceptionalAppenderTest {
+public class ExceptionalAppenderTest {
     
     private static final String API_KEY = "";
 
@@ -22,8 +23,8 @@ public class GetExceptionalAppenderTest {
             System.err.println("Cannot run test with a blank API key");
             return;
         }
-        final GetExceptionalAppender appender = 
-            new GetExceptionalAppender(API_KEY, false);
+        final ExceptionalAppender appender = 
+            new ExceptionalAppender(API_KEY, false);
         final String fqnOfCategoryClass = getClass().getName();
         final Category logger = Logger.getLogger(getClass());
         final Priority level = Level.ERROR;
