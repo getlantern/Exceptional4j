@@ -1,4 +1,4 @@
-This is a project integrating the log4j logger with GetExceptional to report a configurable number of log errors to GetExceptional. GetExceptional4j is licensed under the Apache 2 license.
+This is a project integrating the log4j logger with Exceptional to report a configurable number of log errors to Exceptional. Exceptional4j is licensed under the Apache 2 license.
 
 To include it with maven, you can do:
 
