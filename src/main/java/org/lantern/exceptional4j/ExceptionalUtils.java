@@ -1,4 +1,4 @@
-package org.bns.getexceptional4j;
+package org.lantern.exceptional4j;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * Utilities for GetExceptional4j.
  */
-public class GetExceptionalUtils {
+public class ExceptionalUtils {
     
     public static final String NO_OP_KEY = "no_op_key";
 

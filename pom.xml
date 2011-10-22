@@ -3,10 +3,10 @@
      xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.littleshoot</groupId>
-  <artifactId>getexceptional4j</artifactId>
+  <artifactId>exceptional4j</artifactId>
   <packaging>jar</packaging>
   <version>0.1-SNAPSHOT</version>
-  <name>GetExceptional Log4J Appender</name>
+  <name>Exceptional Log4J Appender</name>
   <description>
       Log4J Appender that reports logs to GetExceptional.
   </description>
@@ -18,10 +18,10 @@
   </properties>
 
   <organization>
-    <name>Brave New Software Project, Inc.</name>
+    <name>Lantern</name>
   </organization>
 
-  <inceptionYear>2010</inceptionYear>
+  <inceptionYear>2011</inceptionYear>
 
   <parent>
     <groupId>org.sonatype.oss</groupId>
@@ -39,7 +39,7 @@
 
   <issueManagement>
     <system>GitHub Issues</system>
-    <url>https://github.com/bravenewsoftware/GetExceptional4j/issues</url>
+    <url>https://github.com/getlantern/Exceptional4j/issues</url>
   </issueManagement>
 
   <dependencies>

@@ -1,4 +1,4 @@
-package org.bns.getexceptional4j;
+package org.lantern.exceptional4j;
 
 import org.apache.log4j.spi.LoggingEvent;
 import org.json.simple.JSONObject;
@@ -6,7 +6,7 @@ import org.json.simple.JSONObject;
 /**
  * Interface for making callbacks prior to sending data to GetExceptional.
  */
-public interface GetExceptionalAppenderCallback {
+public interface ExceptionalAppenderCallback {
 
     /**
      * Allows the creator of a GetExceptional log4j appender to add arbitrary

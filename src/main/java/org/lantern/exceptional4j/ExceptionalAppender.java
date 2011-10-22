@@ -1,4 +1,4 @@
-package org.bns.getexceptional4j;
+package org.lantern.exceptional4j;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -38,14 +38,14 @@ import org.json.simple.JSONObject;
 /**
  * Log4J appender that sends data to GetExceptional.
  */
-public class GetExceptionalAppender extends AppenderSkeleton {
+public class ExceptionalAppender extends AppenderSkeleton {
 
     private final Collection<Bug> recentBugs = 
         Collections.synchronizedSet(new LinkedHashSet<Bug>());
     
     private final ExecutorService pool = Executors.newSingleThreadExecutor();
     
-    private final GetExceptionalAppenderCallback callback;
+    private final ExceptionalAppenderCallback callback;
 
     private final boolean threaded;
 
@@ -60,7 +60,7 @@ public class GetExceptionalAppender extends AppenderSkeleton {
      * 
      * @param apiKey Your API key.
      */
-    public GetExceptionalAppender(final String apiKey) {
+    public ExceptionalAppender(final String apiKey) {
         this(apiKey, Level.WARN);
     }
     
@@ -73,9 +73,9 @@ public class GetExceptionalAppender extends AppenderSkeleton {
      * the reportingLevel to Level.WARN, for example, all warn level logs will
      * be sent along with any more severe logs such as ERROR and FATAL.
      */
-    public GetExceptionalAppender(final String apiKey, 
+    public ExceptionalAppender(final String apiKey, 
         final Priority reportingLevel) {
-        this(apiKey, new GetExceptionalAppenderCallback() {
+        this(apiKey, new ExceptionalAppenderCallback() {
             public boolean addData(final JSONObject json, final LoggingEvent le) {return true;}
         }, reportingLevel);
     }
@@ -87,8 +87,8 @@ public class GetExceptionalAppender extends AppenderSkeleton {
      * @param callback The class to call for modifications prior to submitting
      * the bug.
      */
-    public GetExceptionalAppender(final String apiKey, 
-        final GetExceptionalAppenderCallback callback) {
+    public ExceptionalAppender(final String apiKey, 
+        final ExceptionalAppenderCallback callback) {
         this(apiKey, callback, true, Level.WARN);
     }
     
@@ -103,8 +103,8 @@ public class GetExceptionalAppender extends AppenderSkeleton {
      * the reportingLevel to Level.WARN, for example, all warn level logs will
      * be sent along with any more severe logs such as ERROR and FATAL.
      */
-    public GetExceptionalAppender(final String apiKey, 
-        final GetExceptionalAppenderCallback callback, 
+    public ExceptionalAppender(final String apiKey, 
+        final ExceptionalAppenderCallback callback, 
         final Priority reportingLevel) {
         this(apiKey, callback, true, reportingLevel);
     }
@@ -116,8 +116,8 @@ public class GetExceptionalAppender extends AppenderSkeleton {
      * @param apiKey Your API key.
      * @param threaded Whether or not to thread submissions to GetExceptional.
      */
-    public GetExceptionalAppender(final String apiKey, final boolean threaded) {
-        this(apiKey, new GetExceptionalAppenderCallback() {
+    public ExceptionalAppender(final String apiKey, final boolean threaded) {
+        this(apiKey, new ExceptionalAppenderCallback() {
             public boolean addData(final JSONObject json, final LoggingEvent le) {return true;}
         }, threaded, Level.WARN);
     }
@@ -134,14 +134,14 @@ public class GetExceptionalAppender extends AppenderSkeleton {
      * the reportingLevel to Level.WARN, for example, all warn level logs will
      * be sent along with any more severe logs such as ERROR and FATAL.
      */
-    public GetExceptionalAppender(final String apiKey, 
-        final GetExceptionalAppenderCallback callback,
+    public ExceptionalAppender(final String apiKey, 
+        final ExceptionalAppenderCallback callback,
         final boolean threaded, final Priority reportingLevel) {
         this.apiKey = apiKey;
         this.callback = callback;
         this.threaded = threaded;
         this.reportingLevel = reportingLevel;
-        if (this.apiKey.equals(GetExceptionalUtils.NO_OP_KEY)) {
+        if (this.apiKey.equals(ExceptionalUtils.NO_OP_KEY)) {
             this.active = false;
         } else {
             this.active = true;
@@ -347,7 +347,7 @@ public class GetExceptionalAppender extends AppenderSkeleton {
             exceptionClass = li.getClassName();
         }
         json.put("exception_class", exceptionClass);
-        json.put("occurred_at", GetExceptionalUtils.iso8601());
+        json.put("occurred_at", ExceptionalUtils.iso8601());
         return json;
     }
     
