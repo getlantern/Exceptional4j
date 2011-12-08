@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -279,8 +281,10 @@ public class ExceptionalAppender extends AppenderSkeleton {
             EntityUtils.consume(responseEntity);
         } catch (final IOException e) {
             System.err.println("\n\nERROR::IO error connecting to server" + e);
+            System.out.println(dumpStack(e));
         } catch (final Throwable e) {
             System.err.println("Got error\n" + e);
+            System.out.println(dumpStack(e));
         } finally {
             IOUtils.closeQuietly(is);
             IOUtils.closeQuietly(gos);
@@ -369,6 +373,33 @@ public class ExceptionalAppender extends AppenderSkeleton {
             }
         } 
         return array;
+    }
+    
+    /**
+     * Returns the stack trace as a string.
+     * 
+     * @param cause
+     *            The thread to dump.
+     * @return The stack trace as a string.
+     */
+    private static String dumpStack(final Throwable cause) {
+        if (cause == null) {
+            return "Throwable was null";
+        }
+        final StringWriter sw = new StringWriter();
+        final PrintWriter s = new PrintWriter(sw);
+
+        // This is very close to what Thread.dumpStack does.
+        cause.printStackTrace(s);
+
+        final String stack = sw.toString();
+        try {
+            sw.close();
+        } catch (final IOException e) {
+            System.err.println("Could not close "+e);
+        }
+        s.close();
+        return stack;
     }
 
     private static final class Bug {
