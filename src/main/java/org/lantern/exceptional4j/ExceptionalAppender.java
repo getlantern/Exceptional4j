@@ -236,7 +236,7 @@ public class ExceptionalAppender extends AppenderSkeleton {
         System.out.println("Submitting data...");
         final DefaultHttpClient httpclient = new DefaultHttpClient();
 
-        final String url = "http://api.getexceptional.com/api/errors?" +
+        final String url = "https://www.exceptional.io/api/errors?" +
             "api_key="+this.apiKey+"&protocol_version=6";
         final HttpPost post = new HttpPost(url);
         post.setHeader(HttpHeaders.CONTENT_ENCODING, "gzip");
