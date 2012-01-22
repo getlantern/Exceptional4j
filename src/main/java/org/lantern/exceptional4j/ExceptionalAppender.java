@@ -38,7 +38,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * Log4J appender that sends data to GetExceptional.
+ * Log4J appender that sends data to Exceptional.
  */
 public class ExceptionalAppender extends AppenderSkeleton {
 
@@ -116,7 +116,7 @@ public class ExceptionalAppender extends AppenderSkeleton {
      * submissions. Not threading can be useful for testing in particular.
      * 
      * @param apiKey Your API key.
-     * @param threaded Whether or not to thread submissions to GetExceptional.
+     * @param threaded Whether or not to thread submissions to Exceptional.
      */
     public ExceptionalAppender(final String apiKey, final boolean threaded) {
         this(apiKey, new ExceptionalAppenderCallback() {
@@ -130,7 +130,7 @@ public class ExceptionalAppender extends AppenderSkeleton {
      * @param apiKey Your API key.
      * @param callback The class to call for modificatios prior to submitting
      * the bug.
-     * @param threaded Whether or not to thread submissions to GetExceptional.
+     * @param threaded Whether or not to thread submissions to Exceptional.
      * @param reportingLevel The log4j level to report errors at. Anything 
      * logged at the specified level or above will be reported. If you set
      * the reportingLevel to Level.WARN, for example, all warn level logs will
@@ -154,7 +154,7 @@ public class ExceptionalAppender extends AppenderSkeleton {
     public void append(final LoggingEvent le) {
         // Only submit the bug under certain conditions.
         if (!active) {
-            System.out.println("GetExceptional reporting is not active");
+            System.out.println("Exceptional reporting is not active");
             return;
         }
         if (submitBug(le)) {
@@ -357,7 +357,7 @@ public class ExceptionalAppender extends AppenderSkeleton {
     
     private JSONObject clientData(final LoggingEvent le) {
         final JSONObject json = new JSONObject();
-        json.put("client", "getexceptional-java-plugin");
+        json.put("client", "exceptional-java-plugin");
         json.put("version", "0.1");
         json.put("protocol_version", "6");
         return json;
