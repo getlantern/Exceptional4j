@@ -3,7 +3,7 @@ This is a project integrating the log4j logger with Exceptional to report a conf
 To include it with maven, you can do:
 
     <dependency>
-      <groupId>org.littleshoot</groupId>
+      <groupId>org.getlantern</groupId>
       <artifactId>exceptional4j</artifactId>
       <version>0.1-SNAPSHOT</version>
     </dependency>
