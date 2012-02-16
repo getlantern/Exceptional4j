@@ -221,12 +221,18 @@ public class ExceptionalAppender extends AppenderSkeleton {
 
             final JSONObject json = new JSONObject();
             json.put("request", requestData(le));
-            json.put("application_environment", appData(le));
+            
+            final JSONObject appData = new JSONObject();
+            appData.put("application_root_directory", "/");
+            final JSONObject env = getEnv(le);
+            appData.put("env", env);
+            
+            json.put("application_environment", appData);
             json.put("exception", exceptionData(le));
             json.put("client", clientData(le));
-            final String jsonStr = json.toJSONString();
-            System.out.println("JSON:\n"+jsonStr);
-            if (callback.addData(json, this.loggingEvent)) {
+            if (callback.addData(env, le)) {
+                final String jsonStr = json.toJSONString();
+                System.out.println("JSON:\n"+jsonStr);
                 submitData(jsonStr);
             }
         }
@@ -297,12 +303,6 @@ public class ExceptionalAppender extends AppenderSkeleton {
         return json;
     }
     
-    private JSONObject appData(final LoggingEvent le) {
-        final JSONObject json = new JSONObject();
-        json.put("application_root_directory", "/");
-        json.put("env", getEnv(le));
-        return json;
-    }
     private JSONObject getEnv(final LoggingEvent le) {
         final JSONObject json = new JSONObject();
         final LocationInfo li = le.getLocationInformation();
