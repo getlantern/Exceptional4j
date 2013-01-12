@@ -57,6 +57,8 @@ public class ExceptionalAppender extends AppenderSkeleton {
 
     private final boolean active;
 
+    private final DefaultHttpClient httpClient;
+
     /**
      * Creates a new appender.
      * 
@@ -78,7 +80,9 @@ public class ExceptionalAppender extends AppenderSkeleton {
     public ExceptionalAppender(final String apiKey, 
         final Priority reportingLevel) {
         this(apiKey, new ExceptionalAppenderCallback() {
-            public boolean addData(final JSONObject json, final LoggingEvent le) {return true;}
+            public boolean addData(final JSONObject json, final LoggingEvent le) {
+                return true;
+            }
         }, reportingLevel);
     }
 
@@ -91,7 +95,20 @@ public class ExceptionalAppender extends AppenderSkeleton {
      */
     public ExceptionalAppender(final String apiKey, 
         final ExceptionalAppenderCallback callback) {
-        this(apiKey, callback, true, Level.WARN);
+        this(apiKey, callback, new DefaultHttpClient());
+    }
+    
+    /**
+     * Creates a new appender with callback.
+     * 
+     * @param apiKey Your API key.
+     * @param callback The class to call for modifications prior to submitting
+     * the bug.
+     */
+    public ExceptionalAppender(final String apiKey, 
+        final ExceptionalAppenderCallback callback, 
+        final DefaultHttpClient httpClient) {
+        this(apiKey, callback, true, Level.WARN, httpClient);
     }
     
     /**
@@ -108,7 +125,7 @@ public class ExceptionalAppender extends AppenderSkeleton {
     public ExceptionalAppender(final String apiKey, 
         final ExceptionalAppenderCallback callback, 
         final Priority reportingLevel) {
-        this(apiKey, callback, true, reportingLevel);
+        this(apiKey, callback, true, reportingLevel, new DefaultHttpClient());
     }
     
     /**
@@ -120,15 +137,17 @@ public class ExceptionalAppender extends AppenderSkeleton {
      */
     public ExceptionalAppender(final String apiKey, final boolean threaded) {
         this(apiKey, new ExceptionalAppenderCallback() {
-            public boolean addData(final JSONObject json, final LoggingEvent le) {return true;}
-        }, threaded, Level.WARN);
+            public boolean addData(final JSONObject json, final LoggingEvent le) {
+                return true;
+            }
+        }, threaded, Level.WARN, new DefaultHttpClient());
     }
     
     /**
      * Creates a new appender with callback.
      * 
      * @param apiKey Your API key.
-     * @param callback The class to call for modificatios prior to submitting
+     * @param callback The class to call for modifications prior to submitting
      * the bug.
      * @param threaded Whether or not to thread submissions to Exceptional.
      * @param reportingLevel The log4j level to report errors at. Anything 
@@ -138,11 +157,13 @@ public class ExceptionalAppender extends AppenderSkeleton {
      */
     public ExceptionalAppender(final String apiKey, 
         final ExceptionalAppenderCallback callback,
-        final boolean threaded, final Priority reportingLevel) {
+        final boolean threaded, final Priority reportingLevel,
+        final DefaultHttpClient httpClient) {
         this.apiKey = apiKey;
         this.callback = callback;
         this.threaded = threaded;
         this.reportingLevel = reportingLevel;
+        this.httpClient = httpClient;
         if (this.apiKey.equals(ExceptionalUtils.NO_OP_KEY)) {
             this.active = false;
         } else {
@@ -240,8 +261,6 @@ public class ExceptionalAppender extends AppenderSkeleton {
     
     private void submitData(final String requestBody) {
         System.out.println("Submitting data...");
-        final DefaultHttpClient httpclient = new DefaultHttpClient();
-
         final String url = "https://www.exceptional.io/api/errors?" +
             "api_key="+this.apiKey+"&protocol_version=6";
         final HttpPost post = new HttpPost(url);
@@ -255,7 +274,7 @@ public class ExceptionalAppender extends AppenderSkeleton {
             gos.close();
             post.setEntity(new ByteArrayEntity(baos.toByteArray()));
             System.err.println("Sending data to server...");
-            final HttpResponse response = httpclient.execute(post);
+            final HttpResponse response = this.httpClient.execute(post);
             System.err.println("Sent data to server...");
 
             final int statusCode = response.getStatusLine().getStatusCode();
@@ -294,7 +313,7 @@ public class ExceptionalAppender extends AppenderSkeleton {
         } finally {
             IOUtils.closeQuietly(is);
             IOUtils.closeQuietly(gos);
-            httpclient.getConnectionManager().shutdown();
+            this.httpClient.getConnectionManager().shutdown();
         }
     }
 
