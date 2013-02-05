@@ -4,10 +4,10 @@ import java.io.IOException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
 
 public interface HttpStrategy {
 
-    HttpResponse execute(HttpPost post) throws ClientProtocolException, IOException;
+    HttpResponse execute(final HttpUriRequest request) throws ClientProtocolException, IOException;
 
 }

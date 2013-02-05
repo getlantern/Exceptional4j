@@ -27,6 +27,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
@@ -175,9 +176,9 @@ public class ExceptionalAppender extends AppenderSkeleton {
 
     private static HttpStrategy wrap(final HttpClient hc) {
         return new HttpStrategy() {
-            public HttpResponse execute(final HttpPost post) 
+            public HttpResponse execute(final HttpUriRequest request) 
                 throws ClientProtocolException, IOException {
-                return hc.execute(post);
+                return hc.execute(request);
             }
         };
     }
