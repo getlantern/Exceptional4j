@@ -20,5 +20,4 @@ for line in hist:
         ins =  line.split(",")[1]
         totalins = totalins + int(ins.split(" ")[1])
 
-#print "Between " + start + " and " + end + " the Lantern team wrote " + str(totalins) + " lines of code!"
-print str(totalins)
+print "Between " + start + " and " + end + " the Lantern team wrote " + str(totalins) + " lines of code!"

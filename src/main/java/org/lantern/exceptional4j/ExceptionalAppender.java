@@ -24,6 +24,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -57,7 +58,7 @@ public class ExceptionalAppender extends AppenderSkeleton {
 
     private final boolean active;
 
-    private final DefaultHttpClient httpClient;
+    private final HttpClient httpClient;
 
     /**
      * Creates a new appender.
@@ -107,7 +108,7 @@ public class ExceptionalAppender extends AppenderSkeleton {
      */
     public ExceptionalAppender(final String apiKey, 
         final ExceptionalAppenderCallback callback, 
-        final DefaultHttpClient httpClient) {
+        final HttpClient httpClient) {
         this(apiKey, callback, true, Level.WARN, httpClient);
     }
     
@@ -158,7 +159,7 @@ public class ExceptionalAppender extends AppenderSkeleton {
     public ExceptionalAppender(final String apiKey, 
         final ExceptionalAppenderCallback callback,
         final boolean threaded, final Priority reportingLevel,
-        final DefaultHttpClient httpClient) {
+        final HttpClient httpClient) {
         this.apiKey = apiKey;
         this.callback = callback;
         this.threaded = threaded;
