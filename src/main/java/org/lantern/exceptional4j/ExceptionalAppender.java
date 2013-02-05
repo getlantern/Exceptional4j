@@ -24,6 +24,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
@@ -58,7 +59,7 @@ public class ExceptionalAppender extends AppenderSkeleton {
 
     private final boolean active;
 
-    private final HttpClient httpClient;
+    private final HttpStrategy httpClient;
 
     /**
      * Creates a new appender.
@@ -109,9 +110,9 @@ public class ExceptionalAppender extends AppenderSkeleton {
     public ExceptionalAppender(final String apiKey, 
         final ExceptionalAppenderCallback callback, 
         final HttpClient httpClient) {
-        this(apiKey, callback, true, Level.WARN, httpClient);
+        this(apiKey, callback, true, Level.WARN, wrap(httpClient));
     }
-    
+
     /**
      * Creates a new appender with callback.
      * 
@@ -126,7 +127,7 @@ public class ExceptionalAppender extends AppenderSkeleton {
     public ExceptionalAppender(final String apiKey, 
         final ExceptionalAppenderCallback callback, 
         final Priority reportingLevel) {
-        this(apiKey, callback, true, reportingLevel, new DefaultHttpClient());
+        this(apiKey, callback, true, reportingLevel, wrap(new DefaultHttpClient()));
     }
     
     /**
@@ -141,7 +142,7 @@ public class ExceptionalAppender extends AppenderSkeleton {
             public boolean addData(final JSONObject json, final LoggingEvent le) {
                 return true;
             }
-        }, threaded, Level.WARN, new DefaultHttpClient());
+        }, threaded, Level.WARN, wrap(new DefaultHttpClient()));
     }
     
     /**
@@ -159,7 +160,7 @@ public class ExceptionalAppender extends AppenderSkeleton {
     public ExceptionalAppender(final String apiKey, 
         final ExceptionalAppenderCallback callback,
         final boolean threaded, final Priority reportingLevel,
-        final HttpClient httpClient) {
+        final HttpStrategy httpClient) {
         this.apiKey = apiKey;
         this.callback = callback;
         this.threaded = threaded;
@@ -172,6 +173,15 @@ public class ExceptionalAppender extends AppenderSkeleton {
         }
     }
 
+    private static HttpStrategy wrap(final HttpClient hc) {
+        return new HttpStrategy() {
+            public HttpResponse execute(final HttpPost post) 
+                throws ClientProtocolException, IOException {
+                return hc.execute(post);
+            }
+        };
+    }
+    
     @Override
     public void append(final LoggingEvent le) {
         // Only submit the bug under certain conditions.
@@ -314,7 +324,7 @@ public class ExceptionalAppender extends AppenderSkeleton {
         } finally {
             IOUtils.closeQuietly(is);
             IOUtils.closeQuietly(gos);
-            this.httpClient.getConnectionManager().shutdown();
+            post.reset();
         }
     }
 
