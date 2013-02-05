@@ -110,6 +110,19 @@ public class ExceptionalAppender extends AppenderSkeleton {
      */
     public ExceptionalAppender(final String apiKey, 
         final ExceptionalAppenderCallback callback, 
+        final HttpStrategy httpClient) {
+        this(apiKey, callback, true, Level.WARN, httpClient);
+    }
+    
+    /**
+     * Creates a new appender with callback.
+     * 
+     * @param apiKey Your API key.
+     * @param callback The class to call for modifications prior to submitting
+     * the bug.
+     */
+    public ExceptionalAppender(final String apiKey, 
+        final ExceptionalAppenderCallback callback, 
         final HttpClient httpClient) {
         this(apiKey, callback, true, Level.WARN, wrap(httpClient));
     }
