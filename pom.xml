@@ -3,7 +3,7 @@
   <groupId>org.getlantern</groupId>
   <artifactId>exceptional4j</artifactId>
   <packaging>jar</packaging>
-  <version>0.2-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <name>Exceptional Log4J Appender</name>
   <description>
       Log4J Appender that reports logs to exceptional.io.
