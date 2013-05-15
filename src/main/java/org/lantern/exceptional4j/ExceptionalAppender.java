@@ -185,6 +185,9 @@ public class ExceptionalAppender extends AppenderSkeleton {
         } else {
             this.active = true;
         }
+        if (this.httpClient == null) {
+            throw new NullPointerException("Null HTTP client?");
+        }
     }
 
     private static HttpStrategy wrap(final HttpClient hc) {
