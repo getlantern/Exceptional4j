@@ -12,8 +12,10 @@ import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.zip.GZIPOutputStream;
 
 import org.apache.commons.io.FileSystemUtils;
@@ -61,6 +63,8 @@ public class ExceptionalAppender extends AppenderSkeleton {
     private final boolean active;
 
     private final HttpStrategy httpClient;
+    
+    private final Queue<Sanitizer> sanitizers = new LinkedBlockingQueue<Sanitizer>();
 
     /**
      * Creates a new appender.
@@ -188,6 +192,14 @@ public class ExceptionalAppender extends AppenderSkeleton {
         if (this.httpClient == null) {
             throw new NullPointerException("Null HTTP client?");
         }
+    }
+    
+    /**
+     * Add a {@link Sanitizer} to the list of sanitizers used to clean strings
+     * prior to sending them to Exceptional.
+     */
+    public void addSanitizer(Sanitizer filter) {
+        sanitizers.add(filter);
     }
 
     private static HttpStrategy wrap(final HttpClient hc) {
@@ -391,9 +403,9 @@ public class ExceptionalAppender extends AppenderSkeleton {
         return json;
     }
     
-    private JSONObject exceptionData(final LoggingEvent le) {
+    JSONObject exceptionData(final LoggingEvent le) {
         final JSONObject json = new JSONObject();
-        json.put("message", le.getMessage().toString());
+        json.put("message", sanitize(le.getMessage().toString()));
         json.put("backtrace", getThrowableArray(le));
         final LocationInfo li = le.getLocationInformation();
         final String exceptionClass;
@@ -505,6 +517,23 @@ public class ExceptionalAppender extends AppenderSkeleton {
                 return false;
             return true;
         }
+    }
+    
+    /**
+     * Applies all {@link Sanitizer}s to the original string.
+     * 
+     * @param original
+     * @return
+     */
+    private String sanitize(String original) {
+       if (original == null || original.length() == 0) {
+           return original;
+       }
+       String result = original;
+       for (Sanitizer filter : sanitizers) {
+           result = filter.sanitize(result);
+       }
+       return result;
     }
 
 }
