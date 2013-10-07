@@ -198,8 +198,8 @@ public class ExceptionalAppender extends AppenderSkeleton {
      * Add a {@link Sanitizer} to the list of sanitizers used to clean strings
      * prior to sending them to Exceptional.
      */
-    public void addSanitizer(Sanitizer filter) {
-        sanitizers.add(filter);
+    public void addSanitizer(Sanitizer sanitizer) {
+        sanitizers.add(sanitizer);
     }
 
     private static HttpStrategy wrap(final HttpClient hc) {
